@@ -9,38 +9,186 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as GamesRouteImport } from './routes/games'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DiscussionIndexRouteImport } from './routes/discussion.index'
+import { Route as UploadNoteRouteImport } from './routes/upload.note'
+import { Route as SectionSlugRouteImport } from './routes/section.$slug'
+import { Route as NoteIdRouteImport } from './routes/note.$id'
+import { Route as GradeGradeRouteImport } from './routes/grade.$grade'
+import { Route as GameIdRouteImport } from './routes/game.$id'
+import { Route as DiscussionIdRouteImport } from './routes/discussion.$id'
+import { Route as GradeGradeSubjectSubjectRouteImport } from './routes/grade.$grade.subject.$subject'
 
+const GamesRoute = GamesRouteImport.update({
+  id: '/games',
+  path: '/games',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscussionIndexRoute = DiscussionIndexRouteImport.update({
+  id: '/discussion/',
+  path: '/discussion/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UploadNoteRoute = UploadNoteRouteImport.update({
+  id: '/upload/note',
+  path: '/upload/note',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SectionSlugRoute = SectionSlugRouteImport.update({
+  id: '/section/$slug',
+  path: '/section/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoteIdRoute = NoteIdRouteImport.update({
+  id: '/note/$id',
+  path: '/note/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GradeGradeRoute = GradeGradeRouteImport.update({
+  id: '/grade/$grade',
+  path: '/grade/$grade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GameIdRoute = GameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscussionIdRoute = DiscussionIdRouteImport.update({
+  id: '/discussion/$id',
+  path: '/discussion/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GradeGradeSubjectSubjectRoute =
+  GradeGradeSubjectSubjectRouteImport.update({
+    id: '/subject/$subject',
+    path: '/subject/$subject',
+    getParentRoute: () => GradeGradeRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/games': typeof GamesRoute
+  '/discussion/$id': typeof DiscussionIdRoute
+  '/game/$id': typeof GameIdRoute
+  '/grade/$grade': typeof GradeGradeRouteWithChildren
+  '/note/$id': typeof NoteIdRoute
+  '/section/$slug': typeof SectionSlugRoute
+  '/upload/note': typeof UploadNoteRoute
+  '/discussion/': typeof DiscussionIndexRoute
+  '/grade/$grade/subject/$subject': typeof GradeGradeSubjectSubjectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/games': typeof GamesRoute
+  '/discussion/$id': typeof DiscussionIdRoute
+  '/game/$id': typeof GameIdRoute
+  '/grade/$grade': typeof GradeGradeRouteWithChildren
+  '/note/$id': typeof NoteIdRoute
+  '/section/$slug': typeof SectionSlugRoute
+  '/upload/note': typeof UploadNoteRoute
+  '/discussion': typeof DiscussionIndexRoute
+  '/grade/$grade/subject/$subject': typeof GradeGradeSubjectSubjectRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/games': typeof GamesRoute
+  '/discussion/$id': typeof DiscussionIdRoute
+  '/game/$id': typeof GameIdRoute
+  '/grade/$grade': typeof GradeGradeRouteWithChildren
+  '/note/$id': typeof NoteIdRoute
+  '/section/$slug': typeof SectionSlugRoute
+  '/upload/note': typeof UploadNoteRoute
+  '/discussion/': typeof DiscussionIndexRoute
+  '/grade/$grade/subject/$subject': typeof GradeGradeSubjectSubjectRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/games'
+    | '/discussion/$id'
+    | '/game/$id'
+    | '/grade/$grade'
+    | '/note/$id'
+    | '/section/$slug'
+    | '/upload/note'
+    | '/discussion/'
+    | '/grade/$grade/subject/$subject'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/games'
+    | '/discussion/$id'
+    | '/game/$id'
+    | '/grade/$grade'
+    | '/note/$id'
+    | '/section/$slug'
+    | '/upload/note'
+    | '/discussion'
+    | '/grade/$grade/subject/$subject'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/games'
+    | '/discussion/$id'
+    | '/game/$id'
+    | '/grade/$grade'
+    | '/note/$id'
+    | '/section/$slug'
+    | '/upload/note'
+    | '/discussion/'
+    | '/grade/$grade/subject/$subject'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  GamesRoute: typeof GamesRoute
+  DiscussionIdRoute: typeof DiscussionIdRoute
+  GameIdRoute: typeof GameIdRoute
+  GradeGradeRoute: typeof GradeGradeRouteWithChildren
+  NoteIdRoute: typeof NoteIdRoute
+  SectionSlugRoute: typeof SectionSlugRoute
+  UploadNoteRoute: typeof UploadNoteRoute
+  DiscussionIndexRoute: typeof DiscussionIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/games': {
+      id: '/games'
+      path: '/games'
+      fullPath: '/games'
+      preLoaderRoute: typeof GamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +196,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discussion/': {
+      id: '/discussion/'
+      path: '/discussion'
+      fullPath: '/discussion/'
+      preLoaderRoute: typeof DiscussionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upload/note': {
+      id: '/upload/note'
+      path: '/upload/note'
+      fullPath: '/upload/note'
+      preLoaderRoute: typeof UploadNoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/section/$slug': {
+      id: '/section/$slug'
+      path: '/section/$slug'
+      fullPath: '/section/$slug'
+      preLoaderRoute: typeof SectionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/note/$id': {
+      id: '/note/$id'
+      path: '/note/$id'
+      fullPath: '/note/$id'
+      preLoaderRoute: typeof NoteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grade/$grade': {
+      id: '/grade/$grade'
+      path: '/grade/$grade'
+      fullPath: '/grade/$grade'
+      preLoaderRoute: typeof GradeGradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/game/$id': {
+      id: '/game/$id'
+      path: '/game/$id'
+      fullPath: '/game/$id'
+      preLoaderRoute: typeof GameIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discussion/$id': {
+      id: '/discussion/$id'
+      path: '/discussion/$id'
+      fullPath: '/discussion/$id'
+      preLoaderRoute: typeof DiscussionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grade/$grade/subject/$subject': {
+      id: '/grade/$grade/subject/$subject'
+      path: '/subject/$subject'
+      fullPath: '/grade/$grade/subject/$subject'
+      preLoaderRoute: typeof GradeGradeSubjectSubjectRouteImport
+      parentRoute: typeof GradeGradeRoute
+    }
   }
 }
 
+interface GradeGradeRouteChildren {
+  GradeGradeSubjectSubjectRoute: typeof GradeGradeSubjectSubjectRoute
+}
+
+const GradeGradeRouteChildren: GradeGradeRouteChildren = {
+  GradeGradeSubjectSubjectRoute: GradeGradeSubjectSubjectRoute,
+}
+
+const GradeGradeRouteWithChildren = GradeGradeRoute._addFileChildren(
+  GradeGradeRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  GamesRoute: GamesRoute,
+  DiscussionIdRoute: DiscussionIdRoute,
+  GameIdRoute: GameIdRoute,
+  GradeGradeRoute: GradeGradeRouteWithChildren,
+  NoteIdRoute: NoteIdRoute,
+  SectionSlugRoute: SectionSlugRoute,
+  UploadNoteRoute: UploadNoteRoute,
+  DiscussionIndexRoute: DiscussionIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

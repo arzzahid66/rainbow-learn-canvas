@@ -1,0 +1,71 @@
+export type Lang = "zh" | "en";
+
+export interface Dict {
+  brand: string;
+  nav: { home: string; lower: string; upper: string; discussion: string; games: string };
+  a11y: { title: string; fontSize: string; small: string; normal: string; large: string; xl: string; dyslexic: string; contrast: string; tts: string; motion: string };
+  theme: { light: string; dark: string };
+  lang: string;
+  hero: { title: string; subtitle: string; cta: string; explore: string };
+  sections: { lower: string; lowerDesc: string; upper: string; upperDesc: string };
+  why: { title: string; a: string; aDesc: string; b: string; bDesc: string; c: string; cDesc: string };
+  trending: string;
+  stats: { students: string; notes: string; games: string };
+  grade: { p: string; enter: string; complete: string };
+  subjects: { chinese: string; english: string; math: string; general: string; science: string; humanities: string; cs: string };
+  tabs: { tutor: string; student: string; videos: string; websites: string; discussion: string; games: string };
+  upload: { btn: string; review: string; success: string };
+  newPost: string; postReview: string;
+  play: string; visit: string; read: string; verified: string; approved: string; pending: string;
+  submitGame: string; relatedNotes: string; save: string; print: string;
+  footer: { about: string; contact: string; privacy: string };
+  breadcrumb: { home: string };
+  admin: string;
+}
+
+export const dict: Record<Lang, Dict> = {
+  zh: {
+    brand: "學習彩虹館",
+    nav: { home: "首頁", lower: "初小", upper: "高小", discussion: "討論區", games: "遊戲" },
+    a11y: { title: "無障礙設定", fontSize: "字體大小", small: "小", normal: "正常", large: "大", xl: "特大", dyslexic: "易讀字體", contrast: "高對比模式", tts: "朗讀模式", motion: "減少動畫" },
+    theme: { light: "淺色", dark: "深色" },
+    lang: "Language",
+    hero: { title: "學習・玩樂・成長 🌈", subtitle: "為小學生打造的彩虹學習樂園", cta: "開始學習", explore: "探索 →" },
+    sections: { lower: "初小學園", lowerDesc: "小一至小三 · 趣味啟蒙", upper: "高小學園", upperDesc: "小四至小六 · 探索進階" },
+    why: { title: "為甚麼選擇學習彩虹館？", a: "無障礙優先", aDesc: "字體、朗讀、對比 — 人人可用", b: "雙語並行", bDesc: "繁體中文與英文無縫切換", c: "學生原創遊戲", cDesc: "邊玩邊學，由同學親手製作" },
+    trending: "熱門推介",
+    stats: { students: "位學生在學習", notes: "份共享筆記", games: "個原創遊戲" },
+    grade: { p: "小", enter: "進入年級 →", complete: "完成度" },
+    subjects: { chinese: "中國語文", english: "英國語文", math: "數學", general: "常識", science: "科學", humanities: "人文學科", cs: "電腦科學與人工智能" },
+    tabs: { tutor: "導師筆記", student: "學生筆記", videos: "學習影片", websites: "學習網站", discussion: "討論", games: "學生遊戲" },
+    upload: { btn: "+ 上載你的筆記", review: "（提交後將由管理員審核發佈）", success: "已提交！管理員將在 24 小時內審核。" },
+    newPost: "+ 發起新討論", postReview: "（貼文將經審核後公開）",
+    play: "立即遊玩 ▶", visit: "前往 →", read: "閱讀", verified: "已驗證", approved: "已通過", pending: "審核中",
+    submitGame: "+ 提交你的遊戲", relatedNotes: "相關筆記", save: "收藏", print: "列印",
+    footer: { about: "關於我們", contact: "聯絡", privacy: "私隱" },
+    breadcrumb: { home: "首頁" },
+    admin: "管理面板",
+  },
+  en: {
+    brand: "Rainbow Learn",
+    nav: { home: "Home", lower: "Lower Primary", upper: "Upper Primary", discussion: "Discussion", games: "Games" },
+    a11y: { title: "Accessibility", fontSize: "Font Size", small: "Small", normal: "Normal", large: "Large", xl: "Extra Large", dyslexic: "Dyslexia-friendly font", contrast: "High contrast", tts: "Text-to-Speech", motion: "Reduce motion" },
+    theme: { light: "Light", dark: "Dark" },
+    lang: "語言",
+    hero: { title: "Learn. Play. Grow. 🌈", subtitle: "A rainbow learning playground for primary students", cta: "Start Learning", explore: "Explore →" },
+    sections: { lower: "Lower Primary", lowerDesc: "Primary 1–3 · Joyful beginnings", upper: "Upper Primary", upperDesc: "Primary 4–6 · Deeper exploration" },
+    why: { title: "Why Rainbow Learn?", a: "Accessibility-first", aDesc: "Font, TTS, contrast — built for everyone", b: "Bilingual", bDesc: "Seamless Traditional Chinese & English", c: "Student-made games", cDesc: "Learn by playing — built by classmates" },
+    trending: "Trending now",
+    stats: { students: "students learning", notes: "notes shared", games: "games created" },
+    grade: { p: "Primary ", enter: "Enter Grade →", complete: "complete" },
+    subjects: { chinese: "Chinese Language", english: "English Language", math: "Mathematics", general: "General Studies", science: "Science", humanities: "Humanities", cs: "CS & AI" },
+    tabs: { tutor: "Tutor Notes", student: "Student Notes", videos: "Videos", websites: "Websites", discussion: "Discussion", games: "Student Games" },
+    upload: { btn: "+ Upload Your Note", review: "(Reviewed by an admin before publishing)", success: "Submitted! An admin will review your note within 24 hours." },
+    newPost: "+ New Post", postReview: "(Posts are reviewed before appearing publicly)",
+    play: "Play Now ▶", visit: "Visit →", read: "Read", verified: "Verified", approved: "Approved", pending: "Pending review",
+    submitGame: "+ Submit Your Game", relatedNotes: "Related Notes", save: "Save", print: "Print",
+    footer: { about: "About", contact: "Contact", privacy: "Privacy" },
+    breadcrumb: { home: "Home" },
+    admin: "Admin",
+  },
+};
