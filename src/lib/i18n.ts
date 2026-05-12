@@ -1,6 +1,6 @@
 export type Lang = "zh" | "en";
 
-export const dict = {
+export const dict: Record<Lang, Dict> = {
   zh: {
     brand: "學習彩虹館",
     nav: { home: "首頁", lower: "初小", upper: "高小", discussion: "討論區", games: "遊戲" },
