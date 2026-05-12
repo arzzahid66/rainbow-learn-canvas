@@ -1,6 +1,29 @@
 export type Lang = "zh" | "en";
 
-export const dict = {
+export interface Dict {
+  brand: string;
+  nav: { home: string; lower: string; upper: string; discussion: string; games: string };
+  a11y: { title: string; fontSize: string; small: string; normal: string; large: string; xl: string; dyslexic: string; contrast: string; tts: string; motion: string };
+  theme: { light: string; dark: string };
+  lang: string;
+  hero: { title: string; subtitle: string; cta: string; explore: string };
+  sections: { lower: string; lowerDesc: string; upper: string; upperDesc: string };
+  why: { title: string; a: string; aDesc: string; b: string; bDesc: string; c: string; cDesc: string };
+  trending: string;
+  stats: { students: string; notes: string; games: string };
+  grade: { p: string; enter: string; complete: string };
+  subjects: { chinese: string; english: string; math: string; general: string; science: string; humanities: string; cs: string };
+  tabs: { tutor: string; student: string; videos: string; websites: string; discussion: string; games: string };
+  upload: { btn: string; review: string; success: string };
+  newPost: string; postReview: string;
+  play: string; visit: string; read: string; verified: string; approved: string; pending: string;
+  submitGame: string; relatedNotes: string; save: string; print: string;
+  footer: { about: string; contact: string; privacy: string };
+  breadcrumb: { home: string };
+  admin: string;
+}
+
+export const dict: Record<Lang, Dict> = {
   zh: {
     brand: "學習彩虹館",
     nav: { home: "首頁", lower: "初小", upper: "高小", discussion: "討論區", games: "遊戲" },
@@ -10,7 +33,8 @@ export const dict = {
     hero: { title: "學習・玩樂・成長 🌈", subtitle: "為小學生打造的彩虹學習樂園", cta: "開始學習", explore: "探索 →" },
     sections: { lower: "初小學園", lowerDesc: "小一至小三 · 趣味啟蒙", upper: "高小學園", upperDesc: "小四至小六 · 探索進階" },
     why: { title: "為甚麼選擇學習彩虹館？", a: "無障礙優先", aDesc: "字體、朗讀、對比 — 人人可用", b: "雙語並行", bDesc: "繁體中文與英文無縫切換", c: "學生原創遊戲", cDesc: "邊玩邊學，由同學親手製作" },
-    trending: "熱門推介", stats: { students: "位學生在學習", notes: "份共享筆記", games: "個原創遊戲" },
+    trending: "熱門推介",
+    stats: { students: "位學生在學習", notes: "份共享筆記", games: "個原創遊戲" },
     grade: { p: "小", enter: "進入年級 →", complete: "完成度" },
     subjects: { chinese: "中國語文", english: "英國語文", math: "數學", general: "常識", science: "科學", humanities: "人文學科", cs: "電腦科學與人工智能" },
     tabs: { tutor: "導師筆記", student: "學生筆記", videos: "學習影片", websites: "學習網站", discussion: "討論", games: "學生遊戲" },
@@ -31,7 +55,8 @@ export const dict = {
     hero: { title: "Learn. Play. Grow. 🌈", subtitle: "A rainbow learning playground for primary students", cta: "Start Learning", explore: "Explore →" },
     sections: { lower: "Lower Primary", lowerDesc: "Primary 1–3 · Joyful beginnings", upper: "Upper Primary", upperDesc: "Primary 4–6 · Deeper exploration" },
     why: { title: "Why Rainbow Learn?", a: "Accessibility-first", aDesc: "Font, TTS, contrast — built for everyone", b: "Bilingual", bDesc: "Seamless Traditional Chinese & English", c: "Student-made games", cDesc: "Learn by playing — built by classmates" },
-    trending: "Trending now", stats: { students: "students learning", notes: "notes shared", games: "games created" },
+    trending: "Trending now",
+    stats: { students: "students learning", notes: "notes shared", games: "games created" },
     grade: { p: "Primary ", enter: "Enter Grade →", complete: "complete" },
     subjects: { chinese: "Chinese Language", english: "English Language", math: "Mathematics", general: "General Studies", science: "Science", humanities: "Humanities", cs: "CS & AI" },
     tabs: { tutor: "Tutor Notes", student: "Student Notes", videos: "Videos", websites: "Websites", discussion: "Discussion", games: "Student Games" },
@@ -43,7 +68,4 @@ export const dict = {
     breadcrumb: { home: "Home" },
     admin: "Admin",
   },
-} as const satisfies Record<Lang, Dict>;
-
-export type Dict = typeof _zh;
-const _zh = {} as any;
+};
