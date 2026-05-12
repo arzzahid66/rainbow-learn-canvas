@@ -1,6 +1,6 @@
 export type Lang = "zh" | "en";
 
-export const dict: Record<Lang, Dict> = {
+export const dict = {
   zh: {
     brand: "學習彩虹館",
     nav: { home: "首頁", lower: "初小", upper: "高小", discussion: "討論區", games: "遊戲" },
@@ -43,6 +43,7 @@ export const dict: Record<Lang, Dict> = {
     breadcrumb: { home: "Home" },
     admin: "Admin",
   },
-} as const;
+} as const satisfies Record<Lang, Dict>;
 
-export type Dict = typeof dict.zh;
+export type Dict = typeof _zh;
+const _zh = {} as any;
