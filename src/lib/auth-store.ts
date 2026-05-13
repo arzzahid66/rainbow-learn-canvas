@@ -1,0 +1,43 @@
+// Mock auth + admin-uploaded notes store (localStorage)
+
+export type Role = "admin" | "user";
+export interface AuthUser { username: string; role: Role; name: string }
+
+export const SEED_ACCOUNTS: Array<{ username: string; password: string; role: Role; name: string }> = [
+  { username: "admin", password: "admin123", role: "admin", name: "Principal Admin" },
+  { username: "student", password: "student123", role: "user", name: "Emily Student" },
+];
+
+export interface AdminNote {
+  id: string;
+  title: string;
+  description: string;
+  section: "lower-primary" | "upper-primary";
+  grade: number; // 1..6
+  subject: string; // subject key, e.g. math
+  fileName?: string;
+  createdAt: number;
+  author: string;
+}
+
+const NOTES_KEY = "rl_admin_notes";
+
+export function loadAdminNotes(): AdminNote[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(NOTES_KEY) || "[]"); } catch { return []; }
+}
+export function saveAdminNotes(notes: AdminNote[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  window.dispatchEvent(new Event("rl_admin_notes_changed"));
+}
+export function addAdminNote(n: Omit<AdminNote, "id" | "createdAt">) {
+  const notes = loadAdminNotes();
+  const note: AdminNote = { ...n, id: crypto.randomUUID(), createdAt: Date.now() };
+  notes.unshift(note);
+  saveAdminNotes(notes);
+  return note;
+}
+export function deleteAdminNote(id: string) {
+  saveAdminNotes(loadAdminNotes().filter((n) => n.id !== id));
+}

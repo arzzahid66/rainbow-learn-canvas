@@ -1,17 +1,18 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Moon, Sun, Languages, Settings, Menu, X, Sparkles, User } from "lucide-react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Moon, Sun, Languages, Settings, Menu, X, Sparkles, User, ShieldCheck, LogOut, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/app-context";
 import { A11yDrawer } from "./A11yDrawer";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
 export function Navbar() {
-  const { lang, setLang, theme, toggleTheme, t } = useApp();
+  const { lang, setLang, theme, toggleTheme, t, user, isAdmin, logout } = useApp();
   const [a11yOpen, setA11yOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const nav = useNavigate();
 
   const links = [
     { to: "/", label: t.nav.home },
@@ -36,53 +37,53 @@ export function Navbar() {
             {links.map((l) => {
               const active = l.to === "/" ? path === "/" : path.startsWith(l.to);
               return (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  className={`px-3 py-2 rounded-full text-sm font-semibold transition ${active ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground"}`}
-                >
+                <Link key={l.to} to={l.to} className={`px-3 py-2 rounded-full text-sm font-semibold transition ${active ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground"}`}>
                   {l.label}
                 </Link>
               );
             })}
+            {isAdmin && (
+              <Link to="/admin" className={`px-3 py-2 rounded-full text-sm font-semibold transition inline-flex items-center gap-1.5 ${path.startsWith("/admin") || path.startsWith("/upload") ? "bg-coral text-coral-foreground" : "hover:bg-muted text-coral"}`}>
+                <ShieldCheck className="w-4 h-4" /> {t.admin}
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center gap-1">
-            <button
-              onClick={() => setLang(lang === "zh" ? "en" : "zh")}
-              className="px-3 py-2 rounded-full text-xs font-bold hover:bg-muted flex items-center gap-1.5"
-              aria-label="Toggle language"
-            >
-              <Languages className="w-4 h-4" />
-              <span>{lang === "zh" ? "EN" : "中"}</span>
+            <button onClick={() => setLang(lang === "zh" ? "en" : "zh")} className="px-3 py-2 rounded-full text-xs font-bold hover:bg-muted flex items-center gap-1.5" aria-label="Toggle language">
+              <Languages className="w-4 h-4" /><span>{lang === "zh" ? "EN" : "中"}</span>
             </button>
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-muted" aria-label="Toggle theme">
               {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             </button>
-            <button
-              onClick={() => setA11yOpen(true)}
-              className="relative p-2 rounded-full hover:bg-muted animate-pulse-soft"
-              aria-label="Accessibility settings"
-            >
+            <button onClick={() => setA11yOpen(true)} className="relative p-2 rounded-full hover:bg-muted" aria-label="Accessibility settings">
               <Settings className="w-4 h-4" />
               <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-coral text-coral-foreground rounded-full px-1.5 py-0.5">A11y</span>
             </button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="ml-1 w-9 h-9 rounded-full bg-gradient-to-br from-mint to-sky flex items-center justify-center text-white" aria-label="User menu">
-                  <User className="w-4 h-4" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="rounded-2xl">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>My Notes</DropdownMenuItem>
-                <DropdownMenuItem>My Games</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild><Link to="/admin">{t.admin}</Link></DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className={`ml-1 w-9 h-9 rounded-full flex items-center justify-center text-white ${isAdmin ? "bg-gradient-to-br from-coral to-sunny" : "bg-gradient-to-br from-mint to-sky"}`} aria-label="User menu">
+                    <User className="w-4 h-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="rounded-2xl">
+                  <DropdownMenuLabel className="font-bold">{user.name}<div className="text-xs font-normal text-muted-foreground capitalize">{user.role}</div></DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>My Notes</DropdownMenuItem>
+                  {isAdmin && <DropdownMenuItem asChild><Link to="/admin">{t.admin}</Link></DropdownMenuItem>}
+                  {isAdmin && <DropdownMenuItem asChild><Link to="/upload/note">+ Upload Note</Link></DropdownMenuItem>}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => { logout(); nav({ to: "/" }); }}><LogOut className="w-4 h-4 mr-2" />Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login" className="ml-1 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:opacity-90">
+                <LogIn className="w-4 h-4" /> Sign in
+              </Link>
+            )}
 
             <button onClick={() => setMobileOpen(true)} className="lg:hidden p-2 rounded-full hover:bg-muted" aria-label="Menu">
               <Menu className="w-5 h-5" />
@@ -100,6 +101,7 @@ export function Navbar() {
           {links.map((l) => (
             <Link key={l.to} to={l.to} onClick={() => setMobileOpen(false)} className="text-2xl font-display font-bold py-2">{l.label}</Link>
           ))}
+          {isAdmin && <Link to="/admin" onClick={() => setMobileOpen(false)} className="text-2xl font-display font-bold py-2 text-coral">{t.admin}</Link>}
         </div>
       )}
 
