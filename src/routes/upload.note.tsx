@@ -101,13 +101,21 @@ function UploadNote() {
             </div>
           </div>
 
-          <div>
-            <Label className="font-bold mb-2 block">Document / file</Label>
-            <label className="rounded-2xl border-2 border-dashed border-border h-32 flex flex-col items-center justify-center text-muted-foreground hover:border-primary cursor-pointer">
-              <Upload className="w-6 h-6 mb-1" />
-              <span className="text-sm">{fileName || "Click to attach a document (PDF, image, etc.)"}</span>
-              <input type="file" className="hidden" onChange={(e) => setFileName(e.target.files?.[0]?.name || "")} />
-            </label>
+          <div className="rounded-2xl bg-muted/40 p-4 space-y-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Provide a document <span className="text-coral">or</span> a video URL (at least one)</p>
+            <div>
+              <Label className="font-bold mb-2 block">Document / file <span className="text-xs font-normal text-muted-foreground">(optional)</span></Label>
+              <label className="rounded-2xl border-2 border-dashed border-border h-28 flex flex-col items-center justify-center text-muted-foreground hover:border-primary cursor-pointer bg-background">
+                <Upload className="w-6 h-6 mb-1" />
+                <span className="text-sm">{fileName || "Click to attach a document (PDF, image, etc.)"}</span>
+                <input type="file" className="hidden" onChange={(e) => setFileName(e.target.files?.[0]?.name || "")} />
+              </label>
+              {fileName && <button type="button" onClick={() => setFileName("")} className="text-xs text-coral mt-2 underline">Remove file</button>}
+            </div>
+            <div>
+              <Label className="font-bold mb-2 block">Video URL <span className="text-xs font-normal text-muted-foreground">(optional — YouTube, Vimeo, etc.)</span></Label>
+              <Input className="rounded-2xl h-12" type="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." />
+            </div>
           </div>
 
           <div>
