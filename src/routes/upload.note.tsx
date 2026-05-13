@@ -46,9 +46,11 @@ function UploadNote() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !grade || !subject) { toast.error("Please fill title, grade, and subject."); return; }
+    if (!fileName && !videoUrl) { toast.error("Please attach a document or provide a video URL."); return; }
+    if (videoUrl && !/^https?:\/\//i.test(videoUrl)) { toast.error("Video URL must start with http(s)://"); return; }
     const g = parseInt(grade, 10);
     addAdminNote({
-      title, description, fileName,
+      title, description, fileName, videoUrl: videoUrl || undefined,
       grade: g, subject,
       section: g <= 3 ? "lower-primary" : "upper-primary",
       author: user.name,
