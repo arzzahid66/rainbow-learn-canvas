@@ -66,28 +66,57 @@ function SubjectPage() {
           <TabsTrigger value="games" className="rounded-xl text-sm font-bold px-4 py-2.5">🎮 {t.tabs.games}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="tutor" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Link key={i} to="/note/$id" params={{ id: `tutor-${i+1}` }}>
-              <motion.div whileHover={{ y: -4 }} className="card-soft overflow-hidden">
-                <div className={`h-32 flex items-center justify-center text-6xl ${COLOR_BG[meta.color]}`}>{meta.emoji}</div>
-                <div className="p-4">
-                  <div className="font-bold">{titles[i % titles.length]}</div>
-                  <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
-                    <img src={avatar(TUTORS[i % TUTORS.length])} className="w-6 h-6 rounded-full" />
-                    {TUTORS[i % TUTORS.length]}
-                    <Badge variant="secondary" className="ml-auto"><ShieldCheck className="w-3 h-3 mr-1" />{t.verified}</Badge>
-                  </div>
+        <TabsContent value="tutor">
+          {(adminNotes.length > 0 || isAdmin) && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-extrabold text-lg inline-flex items-center gap-2"><Pin className="w-4 h-4 text-coral" /> Admin Notes</h3>
+                {isAdmin && <Link to="/upload/note" className="btn-chunky text-sm">+ Upload Note</Link>}
+              </div>
+              {adminNotes.length === 0 ? (
+                <p className="text-sm text-muted-foreground card-soft p-4">No admin notes for this subject yet.</p>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {adminNotes.map((n) => (
+                    <motion.div key={n.id} whileHover={{ y: -4 }} className="card-soft overflow-hidden border-2 border-coral/40">
+                      <div className={`h-28 flex items-center justify-center text-5xl bg-gradient-to-br from-coral/30 to-sunny/30`}>📌</div>
+                      <div className="p-4">
+                        <div className="font-bold inline-flex items-center gap-2"><FileText className="w-4 h-4 text-coral" />{n.title}</div>
+                        {n.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{n.description}</p>}
+                        <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
+                          <Badge className="bg-coral/20 text-coral-foreground border-coral/40 hover:bg-coral/30">Admin</Badge>
+                          <span className="ml-auto">{new Date(n.createdAt).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              </motion.div>
-            </Link>
-          ))}
+              )}
+            </div>
+          )}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Link key={i} to="/note/$id" params={{ id: `tutor-${i+1}` }}>
+                <motion.div whileHover={{ y: -4 }} className="card-soft overflow-hidden">
+                  <div className={`h-32 flex items-center justify-center text-6xl ${COLOR_BG[meta.color]}`}>{meta.emoji}</div>
+                  <div className="p-4">
+                    <div className="font-bold">{titles[i % titles.length]}</div>
+                    <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
+                      <img src={avatar(TUTORS[i % TUTORS.length])} className="w-6 h-6 rounded-full" />
+                      {TUTORS[i % TUTORS.length]}
+                      <Badge variant="secondary" className="ml-auto"><ShieldCheck className="w-3 h-3 mr-1" />{t.verified}</Badge>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+          </div>
         </TabsContent>
 
         <TabsContent value="student">
           <div className="flex justify-between items-center flex-wrap gap-3 mb-5">
-            <p className="text-sm text-muted-foreground">{t.upload.review}</p>
-            <Link to="/upload/note" className="btn-chunky">{t.upload.btn}</Link>
+            <p className="text-sm text-muted-foreground">Notes shared by other students.</p>
+            {isAdmin && <Link to="/upload/note" className="btn-chunky">{t.upload.btn}</Link>}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {Array.from({ length: 6 }).map((_, i) => (
