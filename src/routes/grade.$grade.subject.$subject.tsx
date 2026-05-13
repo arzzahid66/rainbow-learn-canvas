@@ -1,11 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Breadcrumbs } from "@/components/Layout";
 import { useApp } from "@/lib/app-context";
 import { SUBJECT_BY_SLUG, SUBJECT_META, TUTORS, STUDENTS, SCHOOLS, NOTE_TITLES_EN, NOTE_TITLES_ZH, GAME_TITLES, DISCUSSION_TOPICS, VIDEOS, WEBSITES, avatar, COLOR_BG } from "@/lib/data";
+import { loadAdminNotes, type AdminNote } from "@/lib/auth-store";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Play, Star, ExternalLink, ShieldCheck, Clock } from "lucide-react";
+import { Heart, MessageCircle, Play, Star, ExternalLink, ShieldCheck, Clock, FileText, Pin } from "lucide-react";
 import { SpeakButton } from "@/components/SpeakButton";
 
 export const Route = createFileRoute("/grade/$grade/subject/$subject")({
@@ -20,11 +22,23 @@ export const Route = createFileRoute("/grade/$grade/subject/$subject")({
 
 function SubjectPage() {
   const { num, subjKey } = Route.useLoaderData();
-  const { t, lang } = useApp();
+  const { t, lang, isAdmin } = useApp();
   const meta = SUBJECT_META[subjKey];
   const subjName = (t.subjects as any)[subjKey];
   const isLower = num <= 3;
   const titles = lang === "zh" ? NOTE_TITLES_ZH : NOTE_TITLES_EN;
+
+  const [adminNotes, setAdminNotes] = useState<AdminNote[]>([]);
+  useEffect(() => {
+    const refresh = () => setAdminNotes(loadAdminNotes().filter((n) => n.grade === num && n.subject === subjKey));
+    refresh();
+    window.addEventListener("rl_admin_notes_changed", refresh);
+    window.addEventListener("storage", refresh);
+    return () => {
+      window.removeEventListener("rl_admin_notes_changed", refresh);
+      window.removeEventListener("storage", refresh);
+    };
+  }, [num, subjKey]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
