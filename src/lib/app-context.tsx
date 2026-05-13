@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { dict, type Lang, type Dict } from "./i18n";
+import { SEED_ACCOUNTS, type AuthUser } from "./auth-store";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 const FONT_SCALE: Record<FontSize, number> = { sm: 0.9, md: 1, lg: 1.15, xl: 1.3 };
@@ -21,6 +22,10 @@ interface AppState {
   reduceMotion: boolean;
   setReduceMotion: (v: boolean) => void;
   speak: (text: string) => void;
+  user: AuthUser | null;
+  isAdmin: boolean;
+  login: (username: string, password: string) => { ok: boolean; error?: string };
+  logout: () => void;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -38,6 +43,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [contrast, setContrast] = useState(false);
   const [tts, setTts] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -48,8 +54,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setContrast(load("rl_contrast", false));
     setTts(load("rl_tts", false));
     setReduceMotion(load("rl_motion", false));
+    setUser(load<AuthUser | null>("rl_user", null));
     setHydrated(true);
   }, []);
+
+  const login = (username: string, password: string) => {
+    const acc = SEED_ACCOUNTS.find((a) => a.username === username && a.password === password);
+    if (!acc) return { ok: false, error: "Invalid username or password" };
+    const u: AuthUser = { username: acc.username, role: acc.role, name: acc.name };
+    setUser(u);
+    localStorage.setItem("rl_user", JSON.stringify(u));
+    return { ok: true };
+  };
+  const logout = () => { setUser(null); localStorage.removeItem("rl_user"); };
 
   useEffect(() => { if (hydrated) localStorage.setItem("rl_lang", JSON.stringify(lang)); }, [lang, hydrated]);
   useEffect(() => {
@@ -90,7 +107,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
 
   return (
-    <Ctx.Provider value={{ lang, setLang, t: dict[lang], theme, toggleTheme, fontSize, setFontSize, dyslexic, setDyslexic, contrast, setContrast, tts, setTts, reduceMotion, setReduceMotion, speak }}>
+    <Ctx.Provider value={{ lang, setLang, t: dict[lang], theme, toggleTheme, fontSize, setFontSize, dyslexic, setDyslexic, contrast, setContrast, tts, setTts, reduceMotion, setReduceMotion, speak, user, isAdmin: user?.role === "admin", login, logout }}>
       {children}
     </Ctx.Provider>
   );
