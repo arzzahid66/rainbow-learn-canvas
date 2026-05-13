@@ -79,10 +79,14 @@ function SubjectPage() {
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {adminNotes.map((n) => (
                     <motion.div key={n.id} whileHover={{ y: -4 }} className="card-soft overflow-hidden border-2 border-coral/40">
-                      <div className={`h-28 flex items-center justify-center text-5xl bg-gradient-to-br from-coral/30 to-sunny/30`}>📌</div>
+                      <div className={`h-28 flex items-center justify-center text-5xl bg-gradient-to-br from-coral/30 to-sunny/30`}>{n.videoUrl ? "🎬" : "📌"}</div>
                       <div className="p-4">
                         <div className="font-bold inline-flex items-center gap-2"><FileText className="w-4 h-4 text-coral" />{n.title}</div>
                         {n.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{n.description}</p>}
+                        <div className="flex flex-wrap items-center gap-2 mt-3">
+                          {n.fileName && <a href="#" className="text-xs font-bold text-primary inline-flex items-center gap-1"><FileText className="w-3 h-3" />{n.fileName}</a>}
+                          {n.videoUrl && <a href={n.videoUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-coral inline-flex items-center gap-1"><Play className="w-3 h-3" />Watch video<ExternalLink className="w-3 h-3" /></a>}
+                        </div>
                         <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
                           <Badge className="bg-coral/20 text-coral-foreground border-coral/40 hover:bg-coral/30">Admin</Badge>
                           <span className="ml-auto">{new Date(n.createdAt).toLocaleDateString()}</span>

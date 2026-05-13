@@ -16,6 +16,7 @@ export interface AdminNote {
   grade: number; // 1..6
   subject: string; // subject key, e.g. math
   fileName?: string;
+  videoUrl?: string;
   createdAt: number;
   author: string;
 }
