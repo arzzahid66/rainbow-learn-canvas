@@ -76,7 +76,7 @@ function Admin() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead><tr className="text-left text-xs uppercase text-muted-foreground border-b">
-                    <th className="py-3">Title</th><th>Section</th><th>Grade</th><th>Subject</th><th>File</th><th></th>
+                    <th className="py-3">Title</th><th>Section</th><th>Grade</th><th>Subject</th><th>File</th><th>Video</th><th></th>
                   </tr></thead>
                   <tbody>
                     {adminNotes.map((n) => (
@@ -86,6 +86,7 @@ function Admin() {
                         <td>P{n.grade}</td>
                         <td className="capitalize">{SUBJECT_META[n.subject]?.emoji} {n.subject}</td>
                         <td className="text-xs text-muted-foreground">{n.fileName || "—"}</td>
+                        <td className="text-xs">{n.videoUrl ? <a href={n.videoUrl} target="_blank" rel="noreferrer" className="text-coral underline truncate inline-block max-w-[140px]">link</a> : "—"}</td>
                         <td className="text-right">
                           <button onClick={() => { deleteAdminNote(n.id); toast("Deleted"); }} className="p-1.5 rounded-lg bg-coral/20 hover:bg-coral/40"><Trash2 className="w-4 h-4" /></button>
                         </td>
