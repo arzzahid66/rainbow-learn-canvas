@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GamesRouteImport } from './routes/games'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,6 +22,11 @@ import { Route as GameIdRouteImport } from './routes/game.$id'
 import { Route as DiscussionIdRouteImport } from './routes/discussion.$id'
 import { Route as GradeGradeSubjectSubjectRouteImport } from './routes/grade.$grade.subject.$subject'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GamesRoute = GamesRouteImport.update({
   id: '/games',
   path: '/games',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/games': typeof GamesRoute
+  '/login': typeof LoginRoute
   '/discussion/$id': typeof DiscussionIdRoute
   '/game/$id': typeof GameIdRoute
   '/grade/$grade': typeof GradeGradeRouteWithChildren
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/games': typeof GamesRoute
+  '/login': typeof LoginRoute
   '/discussion/$id': typeof DiscussionIdRoute
   '/game/$id': typeof GameIdRoute
   '/grade/$grade': typeof GradeGradeRouteWithChildren
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/games': typeof GamesRoute
+  '/login': typeof LoginRoute
   '/discussion/$id': typeof DiscussionIdRoute
   '/game/$id': typeof GameIdRoute
   '/grade/$grade': typeof GradeGradeRouteWithChildren
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/games'
+    | '/login'
     | '/discussion/$id'
     | '/game/$id'
     | '/grade/$grade'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/games'
+    | '/login'
     | '/discussion/$id'
     | '/game/$id'
     | '/grade/$grade'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/games'
+    | '/login'
     | '/discussion/$id'
     | '/game/$id'
     | '/grade/$grade'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   GamesRoute: typeof GamesRoute
+  LoginRoute: typeof LoginRoute
   DiscussionIdRoute: typeof DiscussionIdRoute
   GameIdRoute: typeof GameIdRoute
   GradeGradeRoute: typeof GradeGradeRouteWithChildren
@@ -175,6 +188,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/games': {
       id: '/games'
       path: '/games'
@@ -271,6 +291,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   GamesRoute: GamesRoute,
+  LoginRoute: LoginRoute,
   DiscussionIdRoute: DiscussionIdRoute,
   GameIdRoute: GameIdRoute,
   GradeGradeRoute: GradeGradeRouteWithChildren,
@@ -282,3 +303,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
