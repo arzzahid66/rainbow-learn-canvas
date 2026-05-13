@@ -20,6 +20,7 @@ function UploadNote() {
   const [grade, setGrade] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
   const [fileName, setFileName] = useState<string>("");
+  const [videoUrl, setVideoUrl] = useState<string>("");
 
   if (!user) {
     return (
