@@ -1,9 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { dict, type Lang, type Dict } from "./i18n";
-import { SEED_ACCOUNTS, type AuthUser } from "./auth-store";
+import type { AuthUser } from "./auth-store";
+import { supabase, type Role } from "./supabase";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 const FONT_SCALE: Record<FontSize, number> = { sm: 0.9, md: 1, lg: 1.15, xl: 1.3 };
+
+export interface AuthResult { ok: boolean; error?: string }
 
 interface AppState {
   lang: Lang;
@@ -23,9 +26,11 @@ interface AppState {
   setReduceMotion: (v: boolean) => void;
   speak: (text: string) => void;
   user: AuthUser | null;
+  authLoading: boolean;
   isAdmin: boolean;
-  login: (username: string, password: string) => { ok: boolean; error?: string };
-  logout: () => void;
+  login: (email: string, password: string) => Promise<AuthResult>;
+  signup: (email: string, password: string, name: string) => Promise<AuthResult>;
+  logout: () => Promise<void>;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -33,6 +38,16 @@ const Ctx = createContext<AppState | null>(null);
 function load<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   try { const v = localStorage.getItem(key); return v ? (JSON.parse(v) as T) : fallback; } catch { return fallback; }
+}
+
+async function fetchProfile(userId: string): Promise<AuthUser | null> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, email, name, role")
+    .eq("id", userId)
+    .maybeSingle();
+  if (error || !data) return null;
+  return { id: data.id, email: data.email, name: data.name, role: data.role as Role };
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -44,6 +59,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [tts, setTts] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -54,19 +70,58 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setContrast(load("rl_contrast", false));
     setTts(load("rl_tts", false));
     setReduceMotion(load("rl_motion", false));
-    setUser(load<AuthUser | null>("rl_user", null));
     setHydrated(true);
   }, []);
 
-  const login = (username: string, password: string) => {
-    const acc = SEED_ACCOUNTS.find((a) => a.username === username && a.password === password);
-    if (!acc) return { ok: false, error: "Invalid username or password" };
-    const u: AuthUser = { username: acc.username, role: acc.role, name: acc.name };
-    setUser(u);
-    localStorage.setItem("rl_user", JSON.stringify(u));
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!mounted) return;
+      if (data.session?.user) {
+        const p = await fetchProfile(data.session.user.id);
+        if (mounted) setUser(p);
+      }
+      if (mounted) setAuthLoading(false);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!session?.user) { setUser(null); return; }
+      const p = await fetchProfile(session.user.id);
+      setUser(p);
+    });
+    return () => { mounted = false; sub.subscription.unsubscribe(); };
+  }, []);
+
+  const login: AppState["login"] = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) return { ok: false, error: error.message };
+    if (data.user) {
+      const p = await fetchProfile(data.user.id);
+      setUser(p);
+      if (!p) return { ok: false, error: "Signed in but no profile found. Contact support." };
+    }
     return { ok: true };
   };
-  const logout = () => { setUser(null); localStorage.removeItem("rl_user"); };
+
+  const signup: AppState["signup"] = async (email, password, name) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: { data: { name } },
+    });
+    if (error) return { ok: false, error: error.message };
+    // If email confirmation is OFF in Supabase, a session is returned and user is signed in.
+    if (data.session?.user) {
+      const p = await fetchProfile(data.session.user.id);
+      setUser(p);
+    }
+    return { ok: true };
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
 
   useEffect(() => { if (hydrated) localStorage.setItem("rl_lang", JSON.stringify(lang)); }, [lang, hydrated]);
   useEffect(() => {
@@ -107,7 +162,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
 
   return (
-    <Ctx.Provider value={{ lang, setLang, t: dict[lang], theme, toggleTheme, fontSize, setFontSize, dyslexic, setDyslexic, contrast, setContrast, tts, setTts, reduceMotion, setReduceMotion, speak, user, isAdmin: user?.role === "admin", login, logout }}>
+    <Ctx.Provider value={{ lang, setLang, t: dict[lang], theme, toggleTheme, fontSize, setFontSize, dyslexic, setDyslexic, contrast, setContrast, tts, setTts, reduceMotion, setReduceMotion, speak, user, authLoading, isAdmin: user?.role === "admin", login, signup, logout }}>
       {children}
     </Ctx.Provider>
   );

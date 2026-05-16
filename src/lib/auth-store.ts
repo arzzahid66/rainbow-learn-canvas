@@ -1,12 +1,7 @@
-// Mock auth + admin-uploaded notes store (localStorage)
+// Admin-uploaded notes store (localStorage). Auth now lives in Supabase — see lib/supabase.ts.
 
 export type Role = "admin" | "user";
-export interface AuthUser { username: string; role: Role; name: string }
-
-export const SEED_ACCOUNTS: Array<{ username: string; password: string; role: Role; name: string }> = [
-  { username: "admin", password: "admin123", role: "admin", name: "Principal Admin" },
-  { username: "student", password: "student123", role: "user", name: "Emily Student" },
-];
+export interface AuthUser { id: string; email: string; role: Role; name: string }
 
 export interface AdminNote {
   id: string;

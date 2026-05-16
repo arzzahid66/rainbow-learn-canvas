@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GamesRouteImport } from './routes/games'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -22,6 +23,11 @@ import { Route as GameIdRouteImport } from './routes/game.$id'
 import { Route as DiscussionIdRouteImport } from './routes/discussion.$id'
 import { Route as GradeGradeSubjectSubjectRouteImport } from './routes/grade.$grade.subject.$subject'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/games': typeof GamesRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/discussion/$id': typeof DiscussionIdRoute
   '/game/$id': typeof GameIdRoute
   '/grade/$grade': typeof GradeGradeRouteWithChildren
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/games': typeof GamesRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/discussion/$id': typeof DiscussionIdRoute
   '/game/$id': typeof GameIdRoute
   '/grade/$grade': typeof GradeGradeRouteWithChildren
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/games': typeof GamesRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/discussion/$id': typeof DiscussionIdRoute
   '/game/$id': typeof GameIdRoute
   '/grade/$grade': typeof GradeGradeRouteWithChildren
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/games'
     | '/login'
+    | '/signup'
     | '/discussion/$id'
     | '/game/$id'
     | '/grade/$grade'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/games'
     | '/login'
+    | '/signup'
     | '/discussion/$id'
     | '/game/$id'
     | '/grade/$grade'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/games'
     | '/login'
+    | '/signup'
     | '/discussion/$id'
     | '/game/$id'
     | '/grade/$grade'
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   GamesRoute: typeof GamesRoute
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
   DiscussionIdRoute: typeof DiscussionIdRoute
   GameIdRoute: typeof GameIdRoute
   GradeGradeRoute: typeof GradeGradeRouteWithChildren
@@ -188,6 +201,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -292,6 +312,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   GamesRoute: GamesRoute,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
   DiscussionIdRoute: DiscussionIdRoute,
   GameIdRoute: GameIdRoute,
   GradeGradeRoute: GradeGradeRouteWithChildren,
@@ -303,3 +324,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
